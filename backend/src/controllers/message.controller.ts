@@ -46,7 +46,7 @@ export const toggleMessageRead = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id!);
+    const id = parseInt(req.params.id as string);
     const message = await prisma.message.findUnique({ where: { id } });
     if (!message) {
       return next(createError('Message not found', 404));
@@ -70,7 +70,7 @@ export const deleteMessage = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    await prisma.message.delete({ where: { id: parseInt(req.params.id!) } });
+    await prisma.message.delete({ where: { id: parseInt(req.params.id as string) } });
     res.status(200).json({ success: true, message: 'Message deleted' });
   } catch (error) {
     next(error);

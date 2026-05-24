@@ -80,7 +80,7 @@ export const toggleActiveResume = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id!);
+    const id = parseInt(req.params.id as string);
     const resume = await prisma.resume.findUnique({ where: { id } });
     if (!resume) {
       return next(createError('Resume not found', 404));
@@ -110,7 +110,7 @@ export const deleteResume = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    await prisma.resume.delete({ where: { id: parseInt(req.params.id!) } });
+    await prisma.resume.delete({ where: { id: parseInt(req.params.id as string) } });
     res.status(200).json({ success: true, message: 'Resume deleted' });
   } catch (error) {
     next(error);

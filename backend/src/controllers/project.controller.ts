@@ -29,7 +29,7 @@ export const getProjectById = async (
 ): Promise<void> => {
   try {
     const project = await prisma.project.findUnique({
-      where: { id: parseInt(req.params.id!) },
+      where: { id: parseInt(req.params.id as string) },
     });
     if (!project) return next(createError('Project not found', 404));
     res.status(200).json({ success: true, data: project });
@@ -102,7 +102,7 @@ export const updateProject = async (
     } = req.body;
 
     const project = await prisma.project.update({
-      where: { id: parseInt(req.params.id!) },
+      where: { id: parseInt(req.params.id as string) },
       data: {
         title,
         description,
@@ -158,7 +158,7 @@ export const deleteProject = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    await prisma.project.delete({ where: { id: parseInt(req.params.id!) } });
+    await prisma.project.delete({ where: { id: parseInt(req.params.id as string) } });
     res.status(200).json({ success: true, message: 'Project deleted' });
   } catch (error) {
     next(error);

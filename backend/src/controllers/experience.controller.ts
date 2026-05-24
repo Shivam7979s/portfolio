@@ -55,7 +55,7 @@ export const updateExperience = async (
   try {
     const { roleTitle, organization, duration, description, technologies, icon, order } = req.body;
     const experience = await prisma.experience.update({
-      where: { id: parseInt(req.params.id!) },
+      where: { id: parseInt(req.params.id as string) },
       data: {
         roleTitle,
         organization,
@@ -106,7 +106,7 @@ export const deleteExperience = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    await prisma.experience.delete({ where: { id: parseInt(req.params.id!) } });
+    await prisma.experience.delete({ where: { id: parseInt(req.params.id as string) } });
     res.status(200).json({ success: true, message: 'Experience deleted' });
   } catch (error) {
     next(error);

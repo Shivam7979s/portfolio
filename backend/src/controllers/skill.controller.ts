@@ -53,7 +53,7 @@ export const updateSkill = async (
   try {
     const { name, category, icon, level, order } = req.body;
     const skill = await prisma.skill.update({
-      where: { id: parseInt(req.params.id!) },
+      where: { id: parseInt(req.params.id as string) },
       data: {
         name,
         category,
@@ -102,7 +102,7 @@ export const deleteSkill = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    await prisma.skill.delete({ where: { id: parseInt(req.params.id!) } });
+    await prisma.skill.delete({ where: { id: parseInt(req.params.id as string) } });
     res.status(200).json({ success: true, message: 'Skill deleted' });
   } catch (error) {
     next(error);
