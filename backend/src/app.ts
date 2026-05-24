@@ -28,6 +28,11 @@ dotenv.config();
 const app: Application = express();
 
 // ─────────────────────────────────────────────────────────────
+// IMPORTANT FOR RAILWAY / VERCEL PROXY
+// ─────────────────────────────────────────────────────────────
+app.set('trust proxy', 1);
+
+// ─────────────────────────────────────────────────────────────
 // Security Middleware
 // ─────────────────────────────────────────────────────────────
 app.use(
@@ -37,7 +42,7 @@ app.use(
 );
 
 // ─────────────────────────────────────────────────────────────
-// CORS Configuration (FIXED)
+// CORS Configuration
 // ─────────────────────────────────────────────────────────────
 const allowedOrigins = [
   'http://localhost:5173',
@@ -45,18 +50,24 @@ const allowedOrigins = [
   'http://localhost:5175',
   'http://localhost:5176',
   'http://localhost:5177',
+
+  // Production Frontend
   'https://portfolio-git-main-shivams-projects-4c65cb25.vercel.app',
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (Postman/server-side)
+      // Allow Postman / server-side requests
       if (!origin) {
         return callback(null, true);
       }
 
-      if (allowedOrigins.includes(origin)) {
+      // Allow localhost + Vercel
+      if (
+        allowedOrigins.includes(origin) ||
+        origin.includes('.vercel.app')
+      ) {
         return callback(null, true);
       }
 
@@ -74,13 +85,20 @@ app.use(
 );
 
 // ─────────────────────────────────────────────────────────────
+// Handle Preflight Requests
+// ─────────────────────────────────────────────────────────────
+app.options('*', cors());
+
+// ─────────────────────────────────────────────────────────────
 // Rate Limiting
 // ─────────────────────────────────────────────────────────────
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 1000,
+
   standardHeaders: true,
   legacyHeaders: false,
+
   message: {
     error: 'Too many requests, please try again later.',
   },
