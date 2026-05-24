@@ -1,4 +1,7 @@
-/* TODO: Replace with production-ready API client (e.g., axios) */
+/* =========================================
+   API SERVICE
+   Production Ready Base URL Setup
+========================================= */
 
 export interface ApiResponse<T = any> {
   data: T;
@@ -11,43 +14,97 @@ export class ApiService {
   private timeout: number;
 
   constructor() {
-    // Base URL from env, fallback to localhost
-    this.baseUrl = (import.meta.env.VITE_API_URL as string) || 'http://localhost:5000/api';
-    // Default timeout in ms
+    // Railway Production Backend URL
+    this.baseUrl =
+      (import.meta.env.VITE_API_URL as string) ||
+      'https://portfolio-production-5efc.up.railway.app/api';
+
+    // Request timeout
     this.timeout = 10000;
   }
 
-  private async request<T>(path: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
+  private async request<T>(
+    path: string,
+    options: RequestInit = {}
+  ): Promise<ApiResponse<T>> {
     const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), this.timeout);
+
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, this.timeout);
+
     const url = `${this.baseUrl}${path}`;
+
     try {
-      const response = await fetch(url, { ...options, signal: controller.signal });
-      clearTimeout(id);
-      const ok = response.ok;
-      const status = response.status;
-      const data = (await response.json()) as T;
-      return { data, status, ok };
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      const data = await response.json();
+
+      return {
+        data,
+        status: response.status,
+        ok: response.ok,
+      };
     } catch (error) {
-      console.error('API request error:', error);
-      return { data: null as any, status: 0, ok: false };
+      console.error('❌ API Request Error:', error);
+
+      return {
+        data: null as any,
+        status: 0,
+        ok: false,
+      };
     }
   }
 
+  // =========================
+  // GET
+  // =========================
   get<T = any>(path: string): Promise<ApiResponse<T>> {
-    return this.request<T>(path, { method: 'GET' });
+    return this.request<T>(path, {
+      method: 'GET',
+    });
   }
 
+  // =========================
+  // POST
+  // =========================
   post<T = any>(path: string, body: any): Promise<ApiResponse<T>> {
     return this.request<T>(path, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(body),
     });
   }
 
-  // Add more HTTP verbs as needed (put, delete, etc.)
+  // =========================
+  // PUT
+  // =========================
+  put<T = any>(path: string, body: any): Promise<ApiResponse<T>> {
+    return this.request<T>(path, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+  }
+
+  // =========================
+  // DELETE
+  // =========================
+  delete<T = any>(path: string): Promise<ApiResponse<T>> {
+    return this.request<T>(path, {
+      method: 'DELETE',
+    });
+  }
 }
 
-// Export a singleton for ease of import
+// Singleton Export
 export const apiService = new ApiService();
