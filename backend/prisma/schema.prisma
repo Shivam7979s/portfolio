@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HeroSection {
+  id           Int      @id @default(autoincrement())
+  name         String
+  title        String
+  subtitle     String
+  description  String
+  buttons      String   // JSON string representing array of buttons
+  socialLinks  String   // JSON string representing social links
+  bgImage      String?
+  bgVideo      String?
+  profileImage String?
+  settings3D   String?  // JSON string representing ThreeJS canvas settings
+  updatedAt    DateTime @updatedAt
+}
+
+model AboutSection {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String
+  statsCards   String   // JSON string representing stat objects
+  highlights   String   // JSON string representing bullet highlight array
+  personalBio  String
+  profileImage String?
+  updatedAt    DateTime @updatedAt
+}
+
+model Project {
+  id                  Int      @id @default(autoincrement())
+  title               String
+  description         String
+  image               String?
+  screenshots         String?  // JSON string representing screenshot URLs array
+  githubUrl           String?
+  liveUrl             String?
+  techStack           String   // Stored as JSON string or comma-separated
+  featured            Boolean  @default(false)
+  category            String?  @default("Web")
+  markdownDescription String?
+  order               Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Skill {
+  id        Int      @id @default(autoincrement())
+  name      String
+  category  String   // e.g., "Languages", "Frameworks", "Tools", "Databases", "AI/ML", "DevOps"
+  icon      String?
+  level     Int      @default(80) // Skill percentage (0 to 100)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Experience {
+  id           Int      @id @default(autoincrement())
+  roleTitle    String
+  organization String
+  duration     String
+  description  String
+  technologies String   // JSON string representing technologies used
+  icon         String?
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Resume {
+  id         Int      @id @default(autoincrement())
+  fileUrl    String
+  version    String?  @default("1.0")
+  isActive   Boolean  @default(true)
+  uploadedAt DateTime @default(now())
+}
+
+model SocialLinks {
+  id         Int      @id @default(autoincrement())
+  github     String?
+  linkedin   String?
+  twitter    String?
+  instagram  String?
+  portfolio  String?
+  youtube    String?
+  leetcode   String?
+  codeforces String?
+  updatedAt  DateTime @updatedAt
+}
+
+model Settings {
+  id              Int      @id @default(autoincrement())
+  themeColors     String   // JSON string for theme settings
+  logoText        String?
+  logoImage       String?
+  seoTitle        String?
+  seoDescription  String?
+  seoKeywords     String?
+  favicon         String?
+  openGraphImage  String?
+  customCursor    Boolean  @default(false)
+  particleEffects Boolean  @default(true)
+
+  // Contact fields unified in Settings
+  contactEmail    String?  @default("user@example.com")
+  contactPhone    String?  @default("+1234567890")
+  contactLocation String?  @default("New York, USA")
+  contactCTA      String?  @default("Let's build something epic together!")
+
+  updatedAt       DateTime @updatedAt
+}
