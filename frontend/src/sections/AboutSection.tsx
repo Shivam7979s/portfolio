@@ -243,7 +243,7 @@ function StatCard({
               targetValue={stat.value}
               inView={inView}
               color={color}
-              delay={index * 0.12}
+            
             />
           </div>
           <div className="text-[10px] font-mono text-white/40 uppercase tracking-[0.2em] mt-2">

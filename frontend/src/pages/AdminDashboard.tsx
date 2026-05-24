@@ -761,8 +761,8 @@ export default function AdminDashboard() {
                 <div className="lg:col-span-8 glass-premium p-8 rounded-3xl space-y-6">
                   <h3 className="text-xl font-bold font-grotesk">Recent Database Activity</h3>
                   <div className="space-y-4">
-                    {stats.recentActivity.map((activity, idx) => (
-                      <div key={idx} className="flex gap-4 items-start p-4 rounded-2xl bg-white/[0.02] border border-white/5">
+                    {stats.recentActivity.map((activity) => (
+                      <div key={activity.title} className="flex gap-4 items-start p-4 rounded-2xl bg-white/[0.02] border border-white/5">
                         <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 text-xs font-bold ${activity.type === 'project' ? 'bg-purple-500/10 text-purple-400' : activity.type === 'skill' ? 'bg-cyan-500/10 text-cyan-400' : 'bg-pink-500/10 text-pink-400'}`}>
                           {activity.type.substring(0,1).toUpperCase()}
                         </div>
