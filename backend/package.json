@@ -4,17 +4,17 @@
   "description": "Portfolio Backend - Express + Prisma + MySQL",
   "main": "dist/server.js",
   "type": "commonjs",
+
   "scripts": {
     "dev": "nodemon --exec ts-node src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio"
+    "start": "node dist/server.js"
   },
+
   "keywords": [],
   "author": "Shivam Singh",
   "license": "ISC",
+
   "dependencies": {
     "@prisma/client": "^6.9.0",
     "bcryptjs": "^3.0.3",
@@ -27,6 +27,7 @@
     "multer": "^1.4.5-lts.2",
     "uuid": "^14.0.0"
   },
+
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
@@ -39,8 +40,5 @@
     "prisma": "^6.9.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
   }
 }
