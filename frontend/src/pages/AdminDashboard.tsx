@@ -1,7 +1,9 @@
+
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
+  
   LogOut,
   LayoutDashboard,
   Briefcase,
@@ -17,7 +19,7 @@ import {
   Image as ImageIcon,
   Sparkles,
   Award,
-  Globe,
+
   Settings as SettingsIcon,
   User,
   ArrowUp,
