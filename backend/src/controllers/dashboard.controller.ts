@@ -62,7 +62,6 @@ export const getDashboardStats = async (
     if (resumeCount === 0) {
       await prisma.resume.create({
         data: {
-          title: 'Main Resume',
           fileUrl: 'https://example.com/resume.pdf',
           version: '1.0',
           isActive: true,
