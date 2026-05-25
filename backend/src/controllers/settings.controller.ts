@@ -1,25 +1,76 @@
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../prisma/client';
-import { createError } from '../middleware/error.middleware';
 
-// ─── Get Global Settings ──────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// GET GLOBAL SETTINGS
+// ─────────────────────────────────────────────────────────────
 export const getSettings = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const settings = await prisma.settings.findUnique({ where: { id: 1 } });
+    // AUTO SEED IF EMPTY
+    let settings = await prisma.settings.findUnique({
+      where: {
+        id: 1,
+      },
+    });
+
     if (!settings) {
-      return next(createError('Settings not seeded', 404));
+      settings = await prisma.settings.create({
+        data: {
+          id: 1,
+
+          themeColors: '{}',
+
+          logoText: 'CINEMATIC',
+
+          logoImage: '',
+
+          seoTitle: 'Shivam Portfolio',
+
+          seoDescription:
+            'Full Stack Developer Portfolio',
+
+          seoKeywords:
+            'portfolio,developer,react',
+
+          favicon: '',
+
+          openGraphImage: '',
+
+          customCursor: true,
+
+          particleEffects: true,
+
+          contactEmail:
+            'admin@gmail.com',
+
+          contactPhone:
+            '9999999999',
+
+          contactLocation: 'India',
+
+          contactCTA: 'Contact Me',
+        },
+      });
     }
-    res.status(200).json({ success: true, data: settings });
+
+    res.status(200).json({
+      success: true,
+      data: settings,
+    });
   } catch (error) {
+    console.log('❌ GET SETTINGS ERROR:', error);
+
     next(error);
   }
 };
 
-// ─── Update Global Settings ────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// UPDATE GLOBAL SETTINGS
+// ─────────────────────────────────────────────────────────────
 export const updateSettings = async (
   req: Request,
   res: Response,
@@ -43,28 +94,138 @@ export const updateSettings = async (
       contactCTA,
     } = req.body;
 
-    const updatedSettings = await prisma.settings.update({
-      where: { id: 1 },
-      data: {
-        themeColors: typeof themeColors === 'object' ? JSON.stringify(themeColors) : themeColors,
-        logoText: logoText || null,
-        logoImage: logoImage || null,
-        seoTitle: seoTitle || null,
-        seoDescription: seoDescription || null,
-        seoKeywords: seoKeywords || null,
-        favicon: favicon || null,
-        openGraphImage: openGraphImage || null,
-        customCursor: customCursor === true || customCursor === 'true',
-        particleEffects: particleEffects === true || particleEffects === 'true',
-        contactEmail: contactEmail || null,
-        contactPhone: contactPhone || null,
-        contactLocation: contactLocation || null,
-        contactCTA: contactCTA || null,
-      },
-    });
+    const updatedSettings =
+      await prisma.settings.upsert({
+        where: {
+          id: 1,
+        },
 
-    res.status(200).json({ success: true, data: updatedSettings });
+        update: {
+          themeColors:
+            typeof themeColors ===
+            'object'
+              ? JSON.stringify(
+                  themeColors
+                )
+              : themeColors || '{}',
+
+          logoText:
+            logoText || '',
+
+          logoImage:
+            logoImage || '',
+
+          seoTitle:
+            seoTitle || '',
+
+          seoDescription:
+            seoDescription || '',
+
+          seoKeywords:
+            seoKeywords || '',
+
+          favicon:
+            favicon || '',
+
+          openGraphImage:
+            openGraphImage || '',
+
+          customCursor:
+            customCursor === true ||
+            customCursor === 'true',
+
+          particleEffects:
+            particleEffects ===
+              true ||
+            particleEffects ===
+              'true',
+
+          contactEmail:
+            contactEmail || '',
+
+          contactPhone:
+            contactPhone || '',
+
+          contactLocation:
+            contactLocation || '',
+
+          contactCTA:
+            contactCTA || '',
+        },
+
+        create: {
+          id: 1,
+
+          themeColors:
+            typeof themeColors ===
+            'object'
+              ? JSON.stringify(
+                  themeColors
+                )
+              : themeColors || '{}',
+
+          logoText:
+            logoText || 'CINEMATIC',
+
+          logoImage:
+            logoImage || '',
+
+          seoTitle:
+            seoTitle ||
+            'Shivam Portfolio',
+
+          seoDescription:
+            seoDescription ||
+            'Full Stack Developer Portfolio',
+
+          seoKeywords:
+            seoKeywords ||
+            'portfolio,developer,react',
+
+          favicon:
+            favicon || '',
+
+          openGraphImage:
+            openGraphImage || '',
+
+          customCursor:
+            customCursor === true ||
+            customCursor === 'true',
+
+          particleEffects:
+            particleEffects ===
+              true ||
+            particleEffects ===
+              'true',
+
+          contactEmail:
+            contactEmail ||
+            'admin@gmail.com',
+
+          contactPhone:
+            contactPhone ||
+            '9999999999',
+
+          contactLocation:
+            contactLocation ||
+            'India',
+
+          contactCTA:
+            contactCTA ||
+            'Contact Me',
+        },
+      });
+
+    res.status(200).json({
+      success: true,
+      data: updatedSettings,
+    });
   } catch (error) {
+    console.log(
+      '❌ UPDATE SETTINGS ERROR:',
+      error
+    );
+
     next(error);
   }
 };

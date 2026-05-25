@@ -2,117 +2,234 @@ import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../prisma/client';
 import { createError } from '../middleware/error.middleware';
 
-// ─── Get All Resumes ──────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// GET ALL RESUMES
+// ─────────────────────────────────────────────────────────────
 export const getAllResumes = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
+    // AUTO SEED IF EMPTY
+    const count = await prisma.resume.count();
+
+    if (count === 0) {
+      await prisma.resume.create({
+        data: {
+          fileUrl:
+            'https://example.com/resume.pdf',
+
+          version: '1.0',
+
+          isActive: true,
+        },
+      });
+    }
+
     const resumes = await prisma.resume.findMany({
-      orderBy: { uploadedAt: 'desc' },
+      orderBy: {
+        uploadedAt: 'desc',
+      },
     });
-    res.status(200).json({ success: true, data: resumes });
+
+    res.status(200).json({
+      success: true,
+      data: resumes,
+    });
   } catch (error) {
+    console.log('❌ GET RESUMES ERROR:', error);
+
     next(error);
   }
 };
 
-// ─── Get Active Resume ────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// GET ACTIVE RESUME
+// ─────────────────────────────────────────────────────────────
 export const getActiveResume = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const activeResume = await prisma.resume.findFirst({
-      where: { isActive: true },
-    });
-    if (!activeResume) {
-      // Fallback to latest
-      const latest = await prisma.resume.findFirst({
-        orderBy: { uploadedAt: 'desc' }
+    let activeResume =
+      await prisma.resume.findFirst({
+        where: {
+          isActive: true,
+        },
       });
-      res.status(200).json({ success: true, data: latest });
-      return;
+
+    // AUTO CREATE IF EMPTY
+    if (!activeResume) {
+      activeResume =
+        await prisma.resume.create({
+          data: {
+            fileUrl:
+              'https://example.com/resume.pdf',
+
+            version: '1.0',
+
+            isActive: true,
+          },
+        });
     }
-    res.status(200).json({ success: true, data: activeResume });
+
+    res.status(200).json({
+      success: true,
+      data: activeResume,
+    });
   } catch (error) {
+    console.log(
+      '❌ GET ACTIVE RESUME ERROR:',
+      error
+    );
+
     next(error);
   }
 };
 
-// ─── Add Resume Version ────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// CREATE RESUME
+// ─────────────────────────────────────────────────────────────
 export const createResume = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { fileUrl, version } = req.body;
+    const { fileUrl, version } =
+      req.body;
+
     if (!fileUrl) {
-      return next(createError('fileUrl is required', 400));
+      return next(
+        createError(
+          'fileUrl is required',
+          400
+        )
+      );
     }
 
-    // Set all other resumes as inactive since this is the new one
+    // SET OLD RESUMES INACTIVE
     await prisma.resume.updateMany({
-      data: { isActive: false },
-    });
-
-    const newResume = await prisma.resume.create({
       data: {
-        fileUrl,
-        version: version || '1.0',
-        isActive: true,
+        isActive: false,
       },
     });
 
-    res.status(201).json({ success: true, data: newResume });
+    // CREATE NEW RESUME
+    const newResume =
+      await prisma.resume.create({
+        data: {
+          fileUrl,
+
+          version:
+            version || '1.0',
+
+          isActive: true,
+        },
+      });
+
+    res.status(201).json({
+      success: true,
+      data: newResume,
+    });
   } catch (error) {
+    console.log(
+      '❌ CREATE RESUME ERROR:',
+      error
+    );
+
     next(error);
   }
 };
 
-// ─── Toggle Active Resume ──────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// TOGGLE ACTIVE RESUME
+// ─────────────────────────────────────────────────────────────
 export const toggleActiveResume = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const id = parseInt(req.params.id as string);
-    const resume = await prisma.resume.findUnique({ where: { id } });
+    const id = parseInt(
+      req.params.id as string
+    );
+
+    const resume =
+      await prisma.resume.findUnique({
+        where: {
+          id,
+        },
+      });
+
     if (!resume) {
-      return next(createError('Resume not found', 404));
+      return next(
+        createError('Resume not found', 404)
+      );
     }
 
-    // Run transaction: set all to false, then set target to true
+    // TRANSACTION
     await prisma.$transaction([
       prisma.resume.updateMany({
-        data: { isActive: false },
+        data: {
+          isActive: false,
+        },
       }),
+
       prisma.resume.update({
-        where: { id },
-        data: { isActive: true },
+        where: {
+          id,
+        },
+
+        data: {
+          isActive: true,
+        },
       }),
     ]);
 
-    res.status(200).json({ success: true, message: 'Resume set as active' });
+    res.status(200).json({
+      success: true,
+      message: 'Resume set as active',
+    });
   } catch (error) {
+    console.log(
+      '❌ TOGGLE RESUME ERROR:',
+      error
+    );
+
     next(error);
   }
 };
 
-// ─── Delete Resume Version ──────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────
+// DELETE RESUME
+// ─────────────────────────────────────────────────────────────
 export const deleteResume = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    await prisma.resume.delete({ where: { id: parseInt(req.params.id as string) } });
-    res.status(200).json({ success: true, message: 'Resume deleted' });
+    await prisma.resume.delete({
+      where: {
+        id: parseInt(
+          req.params.id as string
+        ),
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Resume deleted',
+    });
   } catch (error) {
+    console.log(
+      '❌ DELETE RESUME ERROR:',
+      error
+    );
+
     next(error);
   }
 };
