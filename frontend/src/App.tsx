@@ -1,25 +1,31 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import './App.css'
+
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
+
 import MainPortfolio from './pages/MainPortfolio'
 import AdminLogin from './pages/AdminLogin'
 import AdminDashboard from './pages/AdminDashboard'
-import CustomCursor from './components/CustomCursor'
-import InfiAIChat from './components/InfiAIChat'
-import CommandConsole from './components/CommandConsole'
-import { Analytics } from "@vercel/analytics/next"
 
 function App() {
   return (
-    <Router>
-      <div className="noise"></div>
-      <CustomCursor />
-      <InfiAIChat />
-      <CommandConsole />
+    <BrowserRouter>
       <Routes>
+        {/* MAIN PORTFOLIO */}
         <Route path="/" element={<MainPortfolio />} />
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+
+        {/* ADMIN */}
+        <Route path="/admin" element={<AdminLogin />} />
+
+        <Route
+          path="/admin/dashboard"
+          element={<AdminDashboard />}
+        />
       </Routes>
-    </Router>
+
+      {/* VERCEL ANALYTICS */}
+      <Analytics />
+    </BrowserRouter>
   )
 }
 
