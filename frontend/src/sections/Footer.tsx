@@ -102,7 +102,7 @@ export default function Footer() {
                 {['Home','About','Skills','Projects','Experience'].map(link => (
                   <li key={link}>
                     <button
-                      onClick={() => document.querySelector(`#${link.toLowerCase()}`)?.scrollIntoView({ behavior: 'smooth' })}
+                      onClick={() => document.querySelector(`#${link?.toLowerCase()}`)?.scrollIntoView({ behavior: 'smooth' })}
                       className="text-sm text-white/40 hover:text-cyan-400 transition-colors cursor-none flex items-center gap-3 group font-medium"
                     >
                       <span className="w-0 h-px bg-cyan-400 transition-all duration-300 group-hover:w-4" />

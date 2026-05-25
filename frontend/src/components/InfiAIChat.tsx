@@ -34,7 +34,7 @@ export default function InfiAIChat() {
   }, [messages, isTyping])
 
   const getOracleResponse = (query: string): string => {
-    const q = query.toLowerCase()
+    const q = query?.toLowerCase()
     if (q.includes('stack') || q.includes('skill') || q.includes('language') || q.includes('tools')) {
       return "Shivam specializes in full-stack architecture. Core stack: Java, Python, TypeScript, React, Node.js, Spring Boot, MySQL, Prisma ORM, and Docker. He specializes in building robust backend APIs and high-fidelity interfaces."
     }

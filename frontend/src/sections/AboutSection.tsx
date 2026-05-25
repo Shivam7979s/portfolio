@@ -318,7 +318,7 @@ export default function AboutSection() {
   }, [])
 
   const getIconElement = (iconName: string, color?: string) => {
-    switch (iconName.toLowerCase()) {
+    switch (iconName?.toLowerCase()) {
       case 'code2':
       case 'project': return <Code2 size={20} style={{ color }} />
       case 'brain':

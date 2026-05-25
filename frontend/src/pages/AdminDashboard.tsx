@@ -1117,7 +1117,11 @@ export default function AdminDashboard() {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {['Languages', 'Frameworks', 'Tools', 'Databases', 'AI/ML', 'DevOps'].map(cat => {
-                  const catSkills = skills.filter(s => s.category.toLowerCase() === cat.toLowerCase())
+                  const catSkills = skills.filter(
+  (s) =>
+    (s.category || '').toLowerCase() ===
+    (cat || '').toLowerCase()
+)
                   return (
                     <div key={cat} className="glass-premium p-6 rounded-3xl space-y-4">
                       <h3 className="text-lg font-bold font-grotesk text-cyan-400 border-b border-white/5 pb-2 flex justify-between">

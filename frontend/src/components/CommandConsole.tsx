@@ -104,7 +104,7 @@ export default function CommandConsole() {
 
   // Filter commands by text query
   const filtered = commands.filter(cmd => 
-    cmd.label.toLowerCase().includes(query.toLowerCase())
+    cmd.label?.toLowerCase().includes(query?.toLowerCase())
   )
 
   // 3. Listen to keyboard shortcuts

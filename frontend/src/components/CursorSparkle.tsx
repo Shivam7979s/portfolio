@@ -14,8 +14,8 @@ export default function CursorSparkle() {
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement
       if (
-        target.tagName.toLowerCase() === 'a' ||
-        target.tagName.toLowerCase() === 'button' ||
+        target.tagName?.toLowerCase() === 'a' ||
+        target.tagName?.toLowerCase() === 'button' ||
         target.closest('a') ||
         target.closest('button') ||
         target.classList.contains('cursor-hover-target') ||

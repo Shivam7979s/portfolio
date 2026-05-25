@@ -5,12 +5,54 @@ import { soundService } from '../services/sound.service'
 import { use3DTilt } from '../hooks/use3DTilt'
 
 const DEFAULT_SKILLS: Skill[] = [
-  { id: 1, name: 'Java', category: 'Languages', icon: '☕', level: 90, order: 0 },
-  { id: 2, name: 'Python', category: 'Languages', icon: '🐍', level: 85, order: 1 },
-  { id: 3, name: 'TypeScript', category: 'Languages', icon: '⚡', level: 80, order: 2 },
-  { id: 4, name: 'React', category: 'Frameworks', icon: '⚛️', level: 90, order: 3 },
-  { id: 5, name: 'Node.js', category: 'Frameworks', icon: '🟢', level: 85, order: 4 },
-  { id: 6, name: 'Docker', category: 'DevOps', icon: '🐳', level: 75, order: 5 },
+  {
+    id: 1,
+    name: 'Java',
+    category: 'Languages',
+    icon: '☕',
+    level: 90,
+    order: 0,
+  },
+  {
+    id: 2,
+    name: 'Python',
+    category: 'Languages',
+    icon: '🐍',
+    level: 85,
+    order: 1,
+  },
+  {
+    id: 3,
+    name: 'C',
+    category: 'Languages',
+    icon: '💻',
+    level: 80,
+    order: 2,
+  },
+  {
+    id: 4,
+    name: 'React',
+    category: 'Frameworks',
+    icon: '⚛️',
+    level: 90,
+    order: 3,
+  },
+  {
+    id: 5,
+    name: 'Node.js',
+    category: 'Frameworks',
+    icon: '🟢',
+    level: 85,
+    order: 4,
+  },
+  {
+    id: 6,
+    name: 'Docker',
+    category: 'DevOps',
+    icon: '🐳',
+    level: 75,
+    order: 5,
+  },
 ]
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -33,7 +75,8 @@ function SkillCard({ skill, index }: SkillCardProps) {
     scale: 1.05,
   })
 
-  const color = CATEGORY_COLORS[skill.category] || '#8b5cf6'
+  const color =
+    CATEGORY_COLORS[skill.category || ''] || '#8b5cf6'
 
   return (
     <motion.div
@@ -96,25 +139,6 @@ function SkillCard({ skill, index }: SkillCardProps) {
         "
         onMouseEnter={() => soundService.playHover()}
       >
-        {/* Glare */}
-        <div
-          className="
-            absolute
-            inset-0
-            pointer-events-none
-            opacity-0
-            group-hover:opacity-100
-            transition-opacity
-            duration-300
-            z-30
-          "
-          style={{
-            background:
-              'radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255,255,255,0.15) 0%, transparent 60%)',
-            mixBlendMode: 'overlay',
-          }}
-        />
-
         {/* Glow */}
         <div
           className="
@@ -140,14 +164,14 @@ function SkillCard({ skill, index }: SkillCardProps) {
             group-hover:scale-110
             transition-transform
             duration-500
-            drop-shadow-2xl
           "
         >
-          {skill.icon && skill.icon.startsWith('http') ? (
+          {skill.icon &&
+          skill.icon.startsWith('http') ? (
             <img
               src={skill.icon}
               alt=""
-              className="w-10 h-10 object-contain mx-auto"
+              className="w-10 h-10 object-contain"
             />
           ) : (
             skill.icon || '🔷'
@@ -170,7 +194,7 @@ function SkillCard({ skill, index }: SkillCardProps) {
             {skill.name}
           </div>
 
-          {/* Meter */}
+          {/* Progress */}
           <div
             className="
               w-16
@@ -180,7 +204,6 @@ function SkillCard({ skill, index }: SkillCardProps) {
               mt-3
               mx-auto
               overflow-hidden
-              relative
             "
           >
             <div
@@ -214,14 +237,29 @@ function SkillCard({ skill, index }: SkillCardProps) {
 }
 
 export default function SkillsSection() {
-  const [skills, setSkills] = useState<Skill[]>(DEFAULT_SKILLS)
-  const [activeTab, setActiveTab] = useState<string>('All')
+  const [skills, setSkills] =
+    useState<Skill[]>(DEFAULT_SKILLS)
+
+  const [activeTab, setActiveTab] =
+    useState<string>('All')
 
   const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-100px' })
+
+  const inView = useInView(ref, {
+    once: true,
+    margin: '-100px',
+  })
 
   const categories = useMemo(
-    () => ['All', 'Languages', 'Frameworks', 'Tools', 'Databases', 'AI/ML', 'DevOps'],
+    () => [
+      'All',
+      'Languages',
+      'Frameworks',
+      'Tools',
+      'Databases',
+      'AI/ML',
+      'DevOps',
+    ],
     []
   )
 
@@ -229,25 +267,38 @@ export default function SkillsSection() {
     skillService
       .getAll()
       .then((res) => {
-        if (res.data.data.length > 0) {
+        if (
+          res?.data?.data &&
+          res.data.data.length > 0
+        ) {
           setSkills(res.data.data)
         }
       })
       .catch(() => {})
   }, [])
 
+  // FIXED FILTER
   const filteredSkills =
     activeTab === 'All'
       ? skills
       : skills.filter(
-          (s) => s.category.toLowerCase() === activeTab.toLowerCase()
+          (s) =>
+            (s.category || '').toLowerCase() ===
+            (activeTab || '').toLowerCase()
         )
 
   return (
     <section
       id="skills"
-      className="relative py-32 px-6 overflow-hidden bg-transparent"
+      className="
+        relative
+        py-32
+        px-6
+        overflow-hidden
+        bg-transparent
+      "
     >
+      {/* Background Glow */}
       <div
         className="
           absolute
@@ -261,16 +312,27 @@ export default function SkillsSection() {
           pointer-events-none
         "
         style={{
-          background: 'radial-gradient(circle, #06b6d4, transparent)',
+          background:
+            'radial-gradient(circle, #06b6d4, transparent)',
         }}
       />
 
-      <div className="max-w-7xl mx-auto" ref={ref}>
+      <div
+        className="max-w-7xl mx-auto"
+        ref={ref}
+      >
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+          animate={
+            inView
+              ? { opacity: 1, y: 0 }
+              : {}
+          }
+          transition={{
+            duration: 0.8,
+            ease: 'easeOut',
+          }}
           className="text-center mb-20"
         >
           <div
@@ -288,6 +350,7 @@ export default function SkillsSection() {
             "
           >
             <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+
             <p
               className="
                 font-mono
@@ -306,12 +369,14 @@ export default function SkillsSection() {
               text-5xl
               md:text-6xl
               font-black
-              font-grotesk
               tracking-tight
               mb-6
             "
           >
-            My <span className="text-gradient">Arsenal</span>
+            My{' '}
+            <span className="text-gradient">
+              Arsenal
+            </span>
           </h2>
 
           <p
@@ -323,19 +388,32 @@ export default function SkillsSection() {
               leading-relaxed
             "
           >
-            Dynamic profile showing skills matrix diagnostics.
+            Dynamic profile showing skills
+            matrix diagnostics.
           </p>
         </motion.div>
 
         {/* Tabs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
+          animate={
+            inView
+              ? { opacity: 1, y: 0 }
+              : {}
+          }
           transition={{ delay: 0.3 }}
-          className="flex flex-wrap gap-2 mb-10 justify-center"
+          className="
+            flex
+            flex-wrap
+            gap-2
+            mb-10
+            justify-center
+          "
         >
           {categories.map((cat) => {
-            const isSelected = activeTab.toLowerCase() === cat.toLowerCase()
+            const isSelected =
+              (activeTab || '').toLowerCase() ===
+              (cat || '').toLowerCase()
 
             return (
               <button
@@ -344,7 +422,9 @@ export default function SkillsSection() {
                   soundService.playClick()
                   setActiveTab(cat)
                 }}
-                onMouseEnter={() => soundService.playHover()}
+                onMouseEnter={() =>
+                  soundService.playHover()
+                }
                 className={`
                   px-5
                   py-2
@@ -354,7 +434,6 @@ export default function SkillsSection() {
                   tracking-widest
                   uppercase
                   transition-all
-                  cursor-none
                   border
                   ${
                     isSelected
@@ -369,11 +448,7 @@ export default function SkillsSection() {
           })}
         </motion.div>
 
-        {/* ── Skill Cards Grid ─────────────────────────────────────────
-            Key change: CSS grid replaces the old flex+fixed-width setup.
-            `auto-rows-fr` + `items-start` guarantees rows collapse
-            upward when fewer cards are present — no ghost gaps.
-        ──────────────────────────────────────────────────────────── */}
+        {/* Skills Grid */}
         <motion.div
           layout
           className="
@@ -390,18 +465,30 @@ export default function SkillsSection() {
         >
           <AnimatePresence mode="popLayout">
             {filteredSkills.map((skill, i) => (
-              // Wrapper is now w-full — it fills its grid cell naturally.
-              // No more fixed pixel widths that create alignment artifacts.
               <motion.div
                 key={skill.id}
                 layout
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.3 }}
+                initial={{
+                  opacity: 0,
+                  scale: 0.8,
+                }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                }}
+                exit={{
+                  opacity: 0,
+                  scale: 0.8,
+                }}
+                transition={{
+                  duration: 0.3,
+                }}
                 className="w-full"
               >
-                <SkillCard skill={skill} index={i} />
+                <SkillCard
+                  skill={skill}
+                  index={i}
+                />
               </motion.div>
             ))}
           </AnimatePresence>

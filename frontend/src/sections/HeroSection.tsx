@@ -73,7 +73,7 @@ export default function HeroSection() {
   }
 
   const getSocialIcon = (platform: string) => {
-    switch (platform.toLowerCase()) {
+    switch (platform?.toLowerCase()) {
       case 'github': return <FaGithub size={20} />
       case 'linkedin': return <FaLinkedin size={20} />
       case 'twitter':
