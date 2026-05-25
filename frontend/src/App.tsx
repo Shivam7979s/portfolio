@@ -5,6 +5,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import CustomCursor from './components/CustomCursor'
 import InfiAIChat from './components/InfiAIChat'
 import CommandConsole from './components/CommandConsole'
+import { Analytics } from "@vercel/analytics/next"
 
 function App() {
   return (
