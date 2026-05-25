@@ -33,8 +33,7 @@ function SkillCard({ skill, index }: SkillCardProps) {
     scale: 1.05,
   })
 
-  const color =
-    CATEGORY_COLORS[skill.category] || '#8b5cf6'
+  const color = CATEGORY_COLORS[skill.category] || '#8b5cf6'
 
   return (
     <motion.div
@@ -95,9 +94,7 @@ function SkillCard({ skill, index }: SkillCardProps) {
           border
           border-white/5
         "
-        onMouseEnter={() =>
-          soundService.playHover()
-        }
+        onMouseEnter={() => soundService.playHover()}
       >
         {/* Glare */}
         <div
@@ -146,17 +143,11 @@ function SkillCard({ skill, index }: SkillCardProps) {
             drop-shadow-2xl
           "
         >
-          {skill.icon &&
-          skill.icon.startsWith('http') ? (
+          {skill.icon && skill.icon.startsWith('http') ? (
             <img
               src={skill.icon}
               alt=""
-              className="
-                w-10
-                h-10
-                object-contain
-                mx-auto
-              "
+              className="w-10 h-10 object-contain mx-auto"
             />
           ) : (
             skill.icon || '🔷'
@@ -164,13 +155,7 @@ function SkillCard({ skill, index }: SkillCardProps) {
         </div>
 
         {/* Content */}
-        <div
-          className="
-            text-center
-            relative
-            z-10
-          "
-        >
+        <div className="text-center relative z-10">
           <div
             className="
               text-sm
@@ -199,12 +184,7 @@ function SkillCard({ skill, index }: SkillCardProps) {
             "
           >
             <div
-              className="
-                h-full
-                rounded-full
-                transition-all
-                duration-1000
-              "
+              className="h-full rounded-full transition-all duration-1000"
               style={{
                 width: `${skill.level}%`,
                 backgroundColor: color,
@@ -234,29 +214,14 @@ function SkillCard({ skill, index }: SkillCardProps) {
 }
 
 export default function SkillsSection() {
-  const [skills, setSkills] =
-    useState<Skill[]>(DEFAULT_SKILLS)
-
-  const [activeTab, setActiveTab] =
-    useState<string>('All')
+  const [skills, setSkills] = useState<Skill[]>(DEFAULT_SKILLS)
+  const [activeTab, setActiveTab] = useState<string>('All')
 
   const ref = useRef(null)
-
-  const inView = useInView(ref, {
-    once: true,
-    margin: '-100px',
-  })
+  const inView = useInView(ref, { once: true, margin: '-100px' })
 
   const categories = useMemo(
-    () => [
-      'All',
-      'Languages',
-      'Frameworks',
-      'Tools',
-      'Databases',
-      'AI/ML',
-      'DevOps',
-    ],
+    () => ['All', 'Languages', 'Frameworks', 'Tools', 'Databases', 'AI/ML', 'DevOps'],
     []
   )
 
@@ -275,21 +240,13 @@ export default function SkillsSection() {
     activeTab === 'All'
       ? skills
       : skills.filter(
-          (s) =>
-            s.category.toLowerCase() ===
-            activeTab.toLowerCase()
+          (s) => s.category.toLowerCase() === activeTab.toLowerCase()
         )
 
   return (
     <section
       id="skills"
-      className="
-        relative
-        py-32
-        px-6
-        overflow-hidden
-        bg-transparent
-      "
+      className="relative py-32 px-6 overflow-hidden bg-transparent"
     >
       <div
         className="
@@ -304,37 +261,17 @@ export default function SkillsSection() {
           pointer-events-none
         "
         style={{
-          background:
-            'radial-gradient(circle, #06b6d4, transparent)',
+          background: 'radial-gradient(circle, #06b6d4, transparent)',
         }}
       />
 
-      <div
-        className="max-w-7xl mx-auto"
-        ref={ref}
-      >
+      <div className="max-w-7xl mx-auto" ref={ref}>
         {/* Header */}
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 40,
-          }}
-          animate={
-            inView
-              ? {
-                  opacity: 1,
-                  y: 0,
-                }
-              : {}
-          }
-          transition={{
-            duration: 0.8,
-            ease: 'easeOut',
-          }}
-          className="
-            text-center
-            mb-20
-          "
+          initial={{ opacity: 0, y: 40 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className="text-center mb-20"
         >
           <div
             className="
@@ -350,16 +287,7 @@ export default function SkillsSection() {
               border-white/5
             "
           >
-            <div
-              className="
-                w-2
-                h-2
-                rounded-full
-                bg-purple-400
-                animate-pulse
-              "
-            />
-
+            <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
             <p
               className="
                 font-mono
@@ -383,10 +311,7 @@ export default function SkillsSection() {
               mb-6
             "
           >
-            My{' '}
-            <span className="text-gradient">
-              Arsenal
-            </span>
+            My <span className="text-gradient">Arsenal</span>
           </h2>
 
           <p
@@ -398,40 +323,19 @@ export default function SkillsSection() {
               leading-relaxed
             "
           >
-            Dynamic profile showing skills
-            matrix diagnostics.
+            Dynamic profile showing skills matrix diagnostics.
           </p>
         </motion.div>
 
         {/* Tabs */}
         <motion.div
-          initial={{
-            opacity: 0,
-            y: 20,
-          }}
-          animate={
-            inView
-              ? {
-                  opacity: 1,
-                  y: 0,
-                }
-              : {}
-          }
-          transition={{
-            delay: 0.3,
-          }}
-          className="
-            flex
-            flex-wrap
-            gap-2
-            mb-10
-            justify-center
-          "
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.3 }}
+          className="flex flex-wrap gap-2 mb-10 justify-center"
         >
           {categories.map((cat) => {
-            const isSelected =
-              activeTab.toLowerCase() ===
-              cat.toLowerCase()
+            const isSelected = activeTab.toLowerCase() === cat.toLowerCase()
 
             return (
               <button
@@ -440,9 +344,7 @@ export default function SkillsSection() {
                   soundService.playClick()
                   setActiveTab(cat)
                 }}
-                onMouseEnter={() =>
-                  soundService.playHover()
-                }
+                onMouseEnter={() => soundService.playHover()}
                 className={`
                   px-5
                   py-2
@@ -467,51 +369,41 @@ export default function SkillsSection() {
           })}
         </motion.div>
 
-        {/* Skill Cards */}
+        {/* ── Skill Cards Grid ─────────────────────────────────────────
+            Key change: CSS grid replaces the old flex+fixed-width setup.
+            `auto-rows-fr` + `items-start` guarantees rows collapse
+            upward when fewer cards are present — no ghost gaps.
+        ──────────────────────────────────────────────────────────── */}
         <motion.div
           layout
           className="
-            flex
-            flex-wrap
-            justify-center
-            lg:justify-start
+            grid
+            grid-cols-2
+            sm:grid-cols-3
+            md:grid-cols-4
+            lg:grid-cols-5
+            xl:grid-cols-6
             gap-5
+            w-full
+            items-start
           "
         >
           <AnimatePresence mode="popLayout">
-            {filteredSkills.map(
-              (skill, i) => (
-                <motion.div
-                  key={skill.id}
-                  layout
-                  initial={{
-                    opacity: 0,
-                    scale: 0.8,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    scale: 1,
-                  }}
-                  exit={{
-                    opacity: 0,
-                    scale: 0.8,
-                  }}
-                  transition={{
-                    duration: 0.3,
-                  }}
-                  className="
-                    w-[160px]
-                    sm:w-[180px]
-                    md:w-[200px]
-                  "
-                >
-                  <SkillCard
-                    skill={skill}
-                    index={i}
-                  />
-                </motion.div>
-              )
-            )}
+            {filteredSkills.map((skill, i) => (
+              // Wrapper is now w-full — it fills its grid cell naturally.
+              // No more fixed pixel widths that create alignment artifacts.
+              <motion.div
+                key={skill.id}
+                layout
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.3 }}
+                className="w-full"
+              >
+                <SkillCard skill={skill} index={i} />
+              </motion.div>
+            ))}
           </AnimatePresence>
         </motion.div>
       </div>
